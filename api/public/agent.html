@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureBank - Interface Agent</title>
+    <link rel="stylesheet" href="/agent.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="entete">
+        <h1>Interface Agent</h1>
+        <p>
+          Cette interface permet de consulter, approuver et rejeter les
+          transactions sensibles.
+        </p>
+      </header>
+
+      <section class="carte">
+        <h2>1. Charger les transactions en attente</h2>
+        <button id="btnCharger">Charger les transactions</button>
+      </section>
+
+      <section class="carte">
+        <h2>2. Approuver une transaction</h2>
+        <label for="approveId">ID de la transaction</label>
+        <input
+          type="text"
+          id="approveId"
+          placeholder="Entrez l’identifiant de la transaction"
+        />
+        <button id="btnApprove">Approuver</button>
+      </section>
+
+      <section class="carte">
+        <h2>3. Rejeter une transaction</h2>
+        <label for="rejectId">ID de la transaction</label>
+        <input
+          type="text"
+          id="rejectId"
+          placeholder="Entrez l’identifiant de la transaction"
+        />
+
+        <label for="rejectReason">Motif du rejet</label>
+        <textarea
+          id="rejectReason"
+          rows="4"
+          placeholder="Exemple : justificatif manquant, opération suspecte..."
+        ></textarea>
+
+        <button id="btnReject">Rejeter</button>
+      </section>
+
+      <section class="carte">
+        <h2>Résultat</h2>
+        <div id="message" class="message info">En attente d’action...</div>
+        <pre id="resultat"></pre>
+      </section>
+    </div>
+
+    <script src="/agent.js"></script>
+  </body>
+</html>

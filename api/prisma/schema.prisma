@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AccountType {
+  CURRENT
+  SAVINGS
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum TransactionType {
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXECUTED
+}
+
+model User {
+  id             String      @id @default(uuid())
+  keycloakUserId String      @unique @map("keycloak_user_id")
+  email          String      @unique
+  fullName       String      @map("full_name")
+  status         UserStatus  @default(ACTIVE)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  accounts              Account[]
+  initiatedTransactions Transaction[] @relation("InitiatedTransactions")
+  validatedTransactions Transaction[] @relation("ValidatedTransactions")
+  auditLogs             AuditLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id            String        @id @default(uuid())
+  accountNumber String        @unique @map("account_number")
+  userId        String        @map("user_id")
+  accountType   AccountType   @map("account_type")
+  balance       Decimal       @db.Decimal(15, 2)
+  currency      String        @default("EUR")
+  status        AccountStatus @default(ACTIVE)
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceTransactions Transaction[] @relation("SourceAccountTransactions")
+  targetTransactions Transaction[] @relation("TargetAccountTransactions")
+
+  @@map("accounts")
+}
+
+model Transaction {
+  id              String            @id @default(uuid())
+  sourceAccountId String            @map("source_account_id")
+  targetAccountId String            @map("target_account_id")
+  amount          Decimal           @db.Decimal(15, 2)
+  currency        String            @default("EUR")
+  type            TransactionType   @default(TRANSFER)
+  status          TransactionStatus @default(PENDING)
+  initiatedBy     String            @map("initiated_by")
+  validatedBy     String?           @map("validated_by")
+  rejectionReason String?           @map("rejection_reason")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  validatedAt     DateTime?         @map("validated_at")
+
+  sourceAccount Account @relation("SourceAccountTransactions", fields: [sourceAccountId], references: [id])
+  targetAccount Account @relation("TargetAccountTransactions", fields: [targetAccountId], references: [id])
+  initiator     User    @relation("InitiatedTransactions", fields: [initiatedBy], references: [id])
+  validator     User?   @relation("ValidatedTransactions", fields: [validatedBy], references: [id])
+
+  @@map("transactions")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?  @map("user_id")
+  action       String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  status       String
+  details      String?
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}

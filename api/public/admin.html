@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureBank - Interface Admin</title>
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="entete">
+        <h1>Interface Admin</h1>
+        <p>
+          Cette interface permet de gérer les utilisateurs, modifier les rôles
+          et suspendre ou réactiver un compte.
+        </p>
+      </header>
+
+      <section class="carte">
+        <h2>1. Charger la liste des utilisateurs</h2>
+        <button id="btnChargerUsers">Charger les utilisateurs</button>
+      </section>
+
+      <section class="carte">
+        <h2>2. Modifier le rôle d'un utilisateur</h2>
+        <label for="roleUserId">ID de l'utilisateur</label>
+        <input type="text" id="roleUserId" placeholder="Entrez l’ID de l’utilisateur" />
+
+        <label for="newRole">Nouveau rôle</label>
+        <select id="newRole">
+          <option value="client">client</option>
+          <option value="agent">agent</option>
+          <option value="admin">admin</option>
+        </select>
+
+        <button id="btnUpdateRole">Mettre à jour le rôle</button>
+      </section>
+
+      <section class="carte">
+        <h2>3. Suspendre ou réactiver un utilisateur</h2>
+        <label for="statusUserId">ID de l’utilisateur</label>
+        <input type="text" id="statusUserId" placeholder="Entrez l’ID de l’utilisateur" />
+
+        <label for="newStatus">Nouveau statut</label>
+        <select id="newStatus">
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="SUSPENDED">SUSPENDED</option>
+        </select>
+
+        <button id="btnUpdateStatus">Mettre à jour le statut</button>
+      </section>
+
+      <section class="carte">
+        <h2>4. Consulter les logs d'audit</h2>
+        <button id="btnAuditLogs">Charger les logs d'audit</button>
+      </section>
+
+      <section class="carte">
+        <h2>Résultat</h2>
+        <div id="message" class="message info">En attente d'action...</div>
+        <pre id="resultat"></pre>
+      </section>
+    </div>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>
